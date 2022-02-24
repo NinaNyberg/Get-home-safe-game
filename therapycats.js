@@ -1,15 +1,13 @@
-const enemyImage = new Image();
-enemyImage.src = '/images/ghost.png';
+const therapycatImage = new Image();
+therapycatImage.src = '/images/marshmallow_earphone-01.png';
 
-class Enemy {
-  constructor(game, x, y, speed) {
+class Cat {
+  constructor(game, x, y) {
     this.game = game;
     this.x = x;
     this.y = y;
     this.width = 30;
     this.height = 40;
-    this.speed = speed;
-    this.frame = 1;
   }
 
   checkIntersection(element) {
@@ -26,21 +24,17 @@ class Enemy {
   }
 
   draw() {
-    this.frame++;
     this.game.context.save();
 
     this.game.context.drawImage(
-      enemyImage,
-      10,
-      0,
-      315,
-      415,
+      therapycatImage,
       this.x,
       this.y,
       this.width,
       this.height
     );
-
+    // this.game.context.fillStyle = 'green';
+    // this.game.context.fillRect(this.x, this.y, this.width, this.height);
     this.game.context.restore();
   }
 }
