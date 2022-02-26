@@ -12,8 +12,24 @@ body {
   font-family: sans-serif;
 }
 
-canvas {
+.screen {
   width: 600px;
   height: 600px;
   background-color: beige;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+}
+
+button {
+  font: inherit;
+  background-color: lightskyblue;
+  color: white;
+  border: 0;
+  padding: 1em;
+  border-radius: 50%;
 }

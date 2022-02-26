@@ -1,42 +1,88 @@
 const canvasElement = document.querySelector('canvas');
 
+const startScreenElement = document.getElementById('start');
+const playingScreenElement = document.getElementById('play');
+const endScreenElement = document.getElementById('game-over');
+
+const startButton = startScreenElement.querySelector('button');
+const tryAgainButton = endScreenElement.querySelector('button');
+
+const screenElements = {
+  start: startScreenElement,
+  playing: playingScreenElement,
+  end: endScreenElement
+};
+
+startButton.addEventListener('click', () => {
+  game.start();
+});
+
+tryAgainButton.addEventListener('click', () => {
+  game.start();
+});
+
 class Game {
-  constructor(canvasElement) {
+  constructor(canvasElement, screens) {
     this.canvas = canvasElement;
     this.context = canvasElement.getContext('2d');
-    // this.background = new Background(this);
+
+    this.screens = screens;
+    this.running = false;
+    this.playerControls();
+  }
+
+  start() {
+    this.running = true;
+    this.score = 100;
+    this.background = new Background(this);
     this.player = new Player(this);
     // this.cats = [];
     this.enemies = [];
-    this.playerControls();
-    this.score = 100;
+
+    this.displayScreen('playing');
+
+    this.loop();
+  }
+
+  displayScreen(name) {
+    for (let screenName in this.screens) {
+      this.screens[screenName].style.display = 'none';
+    }
+    this.screens[name].style.display = '';
+  }
+
+  lose() {
+    this.running = false;
+    this.displayScreen('end');
   }
 
   playerControls() {
     window.addEventListener('keydown', (event) => {
-      event.preventDefault();
-      const code = event.code;
-      switch (code) {
-        case 'ArrowUp':
-          // this.player.y -= 10;
-          this.player.state = 2;
-          this.player.jump = 10;
-          break;
-        case 'ArrowDown':
-          // this.player.y += 10;
-          this.player.state = 3;
-          this.player.jump = 0;
-          break;
-        case 'ArrowRight':
-          this.player.x += 10;
-          if (this.player.jump === 0) this.player.state = 1;
-          this.player.scale = 1;
-          break;
-        case 'ArrowLeft':
-          this.player.x -= 10;
-          if (this.player.jump === 0) this.player.state = 1;
-          this.player.scale = -1;
-          break;
+      if (this.running) {
+        event.preventDefault();
+        const code = event.code;
+        switch (code) {
+          case 'ArrowUp':
+            // this.player.y -= 10;
+            this.player.state = 2;
+            this.player.jump = 10;
+            break;
+          case 'ArrowDown':
+            // this.player.y += 10;
+            this.player.state = 3;
+            this.player.jump = 0;
+            break;
+          case 'ArrowRight':
+            this.player.x += 10;
+            if (this.player.jump === 0) this.player.state = 1;
+            this.player.scale = 1;
+            break;
+          case 'ArrowLeft':
+            this.player.x -= 10;
+            if (this.player.jump === 0) this.player.state = 1;
+            this.player.scale = -1;
+            break;
+        }
       }
     });
     window.addEventListener('keyup', (event) => {
@@ -65,7 +111,9 @@ class Game {
     window.requestAnimationFrame(() => {
       this.runLogic();
       this.draw();
-      this.loop();
+      if (this.running) {
+        this.loop();
+      }
     });
   }
 
@@ -80,11 +128,17 @@ class Game {
       if (intersectionsDetect || enemyIsOutOfBounds) {
         const indexOfEnemy = this.enemies.indexOf(enemy);
         this.enemies.splice(indexOfEnemy, 1);
+      }
+      if (intersectionsDetect) {
+        const indexOfEnemy = this.enemies.indexOf(enemy);
+        this.enemies.splice(indexOfEnemy, 1);
 
-        this.score -= 5;
+        this.score -= 10;
+        if (this.score <= 0) {
+          this.lose();
+        }
       }
     }
-
     //   if (Math.random() < 0.003) {
     //     this.generateCat();
     //   }
@@ -103,7 +157,7 @@ class Game {
     //       const indexOfCats = this.cats.indexOf(cat);
     //       this.cats.splice(indexOfCats, 1);
 
-    //       this.score -= 5;
+    //       this.score += 5;
     //     }
     //   }
   }
@@ -115,10 +169,10 @@ class Game {
 
   draw() {
     this.context.clearRect(0, 0, 600, 600);
-    // this.background.draw();
-    // for (const enemy of this.enemies) {
-    //   enemy.draw();
-    // }
+    this.background.draw();
+    for (const enemy of this.enemies) {
+      enemy.draw();
+    }
     // for (const cat of this.cats) {
     //   cat.draw();
     // }
@@ -127,6 +181,5 @@ class Game {
   }
 }
 
-const game = new Game(canvasElement);
-
+const game = new Game(canvasElement, screenElements);
 game.loop();
