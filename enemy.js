@@ -22,7 +22,7 @@ class Enemy {
   }
 
   runLogic() {
-    this.x -= this.speed;
+    this.x -= this.speed + this.game.speed;
   }
 
   draw() {
@@ -33,8 +33,8 @@ class Enemy {
       enemyImage,
       10,
       0,
-      315,
-      415,
+      396,
+      582,
       this.x,
       this.y,
       this.width,

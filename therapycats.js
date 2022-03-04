@@ -1,13 +1,15 @@
-const therapycatImage = new Image();
-therapycatImage.src = '/images/marshmallow_earphone-01.png';
+const bulletImage = new Image();
+//therapycatImage.src = '/images/marshmallow_earphone-01.png';
+bulletImage.src = '/images/__whippy_eyes_closed_surprised_000.png';
 
-class Cat {
-  constructor(game, x, y) {
+class Pooplet {
+  constructor(game, x, y, direction) {
     this.game = game;
     this.x = x;
     this.y = y;
-    this.width = 30;
-    this.height = 40;
+    this.width = 35;
+    this.height = 30;
+    this.direction = direction;
   }
 
   checkIntersection(element) {
@@ -20,21 +22,20 @@ class Cat {
   }
 
   runLogic() {
-    this.x -= this.speed;
+    this.x += this.direction * 5; // move pooplet left or right
   }
 
   draw() {
     this.game.context.save();
 
     this.game.context.drawImage(
-      therapycatImage,
+      bulletImage,
       this.x,
       this.y,
       this.width,
       this.height
     );
-    // this.game.context.fillStyle = 'green';
-    // this.game.context.fillRect(this.x, this.y, this.width, this.height);
+
     this.game.context.restore();
   }
 }
